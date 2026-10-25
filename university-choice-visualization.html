@@ -1,0 +1,523 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Choosing a University — Learning Visualization</title>
+<style>
+  :root {
+    --bg: #f4f6fb;
+    --card: #ffffff;
+    --ink: #1c2333;
+    --muted: #6b7385;
+    --barbara: #e2604a;
+    --barbara-light: #fdeee9;
+    --sven: #4a63d6;
+    --sven-light: #e9edfb;
+    --amber: #d99a2b;
+    --teal: #1f9e8e;
+    --purple: #8a5cf6;
+    --line: #e3e7f0;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: var(--bg);
+    color: var(--ink);
+    line-height: 1.55;
+  }
+  .wrap { max-width: 1080px; margin: 0 auto; padding: 0 20px 60px; }
+
+  /* ---------- Hero ---------- */
+  header {
+    background: linear-gradient(135deg, #15203b 0%, #2b2f55 55%, #3a3a6e 100%);
+    color: #fff;
+    padding: 56px 20px 44px;
+  }
+  header .wrap { padding: 0 20px; }
+  header h1 { font-size: 34px; letter-spacing: -0.5px; }
+  header p.sub { color: #b8c0e0; margin-top: 8px; font-size: 16px; max-width: 640px; }
+  .hero-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-top: 20px; }
+  .hero-tags span {
+    background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.25);
+    padding: 5px 14px; border-radius: 999px; font-size: 13px;
+  }
+  .hero-tags span b { color: #ffd9a0; }
+  .hero-tags span.s b { color: #aeb9ff; }
+
+  /* ---------- Nav chips ---------- */
+  .nav {
+    position: sticky; top: 0; z-index: 10;
+    background: rgba(255,255,255,.92); backdrop-filter: blur(8px);
+    border-bottom: 1px solid var(--line);
+    display: flex; gap: 8px; overflow-x: auto; padding: 10px 20px;
+  }
+  .nav button {
+    border: 1px solid var(--line); background: #fff; color: var(--ink);
+    padding: 8px 16px; border-radius: 999px; font-size: 14px; cursor: pointer;
+    white-space: nowrap; transition: all .15s;
+  }
+  .nav button:hover { border-color: var(--sven); color: var(--sven); }
+
+  section { margin-top: 44px; scroll-margin-top: 70px; }
+  h2 {
+    font-size: 22px; margin-bottom: 6px;
+    display: flex; align-items: center; gap: 10px;
+  }
+  h2 .dot { width: 12px; height: 12px; border-radius: 50%; display: inline-block; }
+  .section-note { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+
+  /* ---------- Mind map ---------- */
+  .mindmap {
+    background: var(--card); border: 1px solid var(--line);
+    border-radius: 16px; padding: 24px 12px; overflow-x: auto;
+  }
+  .mindmap svg { display: block; margin: 0 auto; }
+
+  /* ---------- Debate cards ---------- */
+  .topic-block { margin-bottom: 30px; }
+  .topic-head {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-size: 13px; font-weight: 700; letter-spacing: 1px; text-transform: uppercase;
+    padding: 6px 14px; border-radius: 999px; margin-bottom: 12px;
+  }
+  .topic-head.loc { background: #fdf3e0; color: #9a6b14; }
+  .topic-head.soc { background: #e3f5f1; color: #11706a; }
+  .topic-head.crs { background: #f1ebfd; color: #6440c0; }
+  .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 720px) { .grid { grid-template-columns: 1fr; } }
+
+  .card {
+    background: var(--card); border: 1px solid var(--line); border-radius: 14px;
+    padding: 18px 20px; position: relative; overflow: hidden;
+  }
+  .card::before {
+    content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 5px;
+  }
+  .card.b::before { background: var(--barbara); }
+  .card.s::before { background: var(--sven); }
+  .card .who {
+    display: flex; align-items: center; gap: 10px; margin-bottom: 10px;
+  }
+  .avatar {
+    width: 34px; height: 34px; border-radius: 50%; color: #fff;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 14px; flex-shrink: 0;
+  }
+  .card.b .avatar { background: var(--barbara); }
+  .card.s .avatar { background: var(--sven); }
+  .who b { font-size: 15px; }
+  .who small { color: var(--muted); font-weight: 400; }
+  ul.pts { list-style: none; }
+  ul.pts li {
+    position: relative; padding-left: 18px; margin: 8px 0; font-size: 14.5px;
+  }
+  ul.pts li::before {
+    content: ""; position: absolute; left: 2px; top: 9px;
+    width: 6px; height: 6px; border-radius: 50%;
+  }
+  .card.b ul.pts li::before { background: var(--barbara); }
+  .card.s ul.pts li::before { background: var(--sven); }
+  .quote {
+    margin-top: 10px; font-size: 13.5px; color: var(--muted);
+    font-style: italic; border-left: 2px solid var(--line); padding-left: 10px;
+  }
+  .card.b .quote { border-color: #f3c9bf; }
+  .card.s .quote { border-color: #c4cde9; }
+
+  /* ---------- Conversation flow ---------- */
+  .flow { position: relative; padding-left: 28px; }
+  .flow::before {
+    content: ""; position: absolute; left: 10px; top: 6px; bottom: 6px;
+    width: 2px; background: linear-gradient(var(--line), var(--line));
+  }
+  .step { position: relative; margin-bottom: 14px; }
+  .step::before {
+    content: ""; position: absolute; left: -24px; top: 4px;
+    width: 14px; height: 14px; border-radius: 50%;
+    background: #fff; border: 3px solid var(--line);
+  }
+  .step.b::before { border-color: var(--barbara); }
+  .step.s::before { border-color: var(--sven); }
+  .step .bubble {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; font-size: 14px;
+  }
+  .step.b .bubble { border-left: 4px solid var(--barbara); }
+  .step.s .bubble { border-left: 4px solid var(--sven); }
+  .step .speaker { font-weight: 700; font-size: 13px; }
+  .step.b .speaker { color: var(--barbara); }
+  .step.s .speaker { color: var(--sven); }
+  .interrupt {
+    display: inline-block; margin-left: 8px; font-size: 11px; font-weight: 700;
+    padding: 2px 8px; border-radius: 999px; vertical-align: middle;
+  }
+  .interrupt.b-int { background: var(--sven-light); color: var(--sven); }
+  .interrupt.s-int { background: var(--barbara-light); color: var(--barbara); }
+  .step .bubble small { display: block; color: var(--muted); margin-top: 3px; }
+
+  /* ---------- Vocabulary ---------- */
+  .vocab { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  @media (max-width: 720px) { .vocab { grid-template-columns: 1fr; } }
+  .vcard {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 12px 16px; cursor: pointer; transition: all .15s;
+  }
+  .vcard:hover { border-color: var(--sven); }
+  .vcard .word { font-weight: 700; font-size: 15px; }
+  .vcard .meaning {
+    display: none; color: var(--muted); font-size: 13.5px; margin-top: 6px;
+  }
+  .vcard.open .meaning { display: block; }
+  .vcard .example { display: none; font-size: 12.5px; color: #8a6d3b; margin-top: 6px; font-style: italic; }
+  .vcard.open .example { display: block; }
+  .vcard .hint { font-size: 11px; color: #b8bcc7; margin-left: 6px; font-weight: 400; }
+
+  /* ---------- Quiz ---------- */
+  .quiz-q {
+    background: var(--card); border: 1px solid var(--line); border-radius: 12px;
+    padding: 16px 18px; margin-bottom: 12px;
+  }
+  .quiz-q .q { font-weight: 700; font-size: 14.5px; margin-bottom: 10px; }
+  .quiz-q .opts { display: grid; gap: 8px; }
+  .quiz-q label {
+    display: flex; align-items: center; gap: 8px; font-size: 14px;
+    padding: 8px 12px; border: 1px solid var(--line); border-radius: 9px;
+    cursor: pointer; transition: all .15s;
+  }
+  .quiz-q label:hover { border-color: var(--sven); background: #f8f9fe; }
+  .quiz-q input { accent-color: var(--sven); }
+  .quiz-q .feedback { display: none; margin-top: 10px; font-size: 13.5px; padding: 8px 12px; border-radius: 9px; }
+  .quiz-q .feedback.ok { display: block; background: #e6f6ef; color: #14714f; border: 1px solid #bfe6d4; }
+  .quiz-q .feedback.bad { display: block; background: #fdeeec; color: #b3402c; border: 1px solid #f3c9bf; }
+  .quiz-q.done label { opacity: .55; cursor: default; }
+  .quiz-q.done label.correct { border-color: #2ea375; background: #e6f6ef; font-weight: 600; }
+  .quiz-q.done label.wrong { border-color: #d9715c; background: #fdeeec; }
+  .score {
+    display: none; margin-top: 16px; text-align: center; font-weight: 700;
+    padding: 14px; border-radius: 12px; background: #e9edfb; color: var(--sven);
+  }
+  .score.show { display: block; }
+
+  footer { text-align: center; color: var(--muted); font-size: 12.5px; margin-top: 50px; }
+
+  /* reveal animation */
+  .reveal { opacity: 0; transform: translateY(16px); transition: all .5s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap">
+    <h1>🎓 Choosing a University</h1>
+    <p class="sub">A transcript visualization of the debate between <b>Barbara</b> and <b>Sven</b> — what really matters when picking where (and what) to study.</p>
+    <div class="hero-tags">
+      <span class="b">🗣️ <b>Barbara</b> — Location &amp; social life first</span>
+      <span class="s">🗣️ <b>Sven</b> — The course is what counts</span>
+      <span>📍 Location</span>
+      <span>🎉 Social life</span>
+      <span>📚 Course content</span>
+    </div>
+  </div>
+</header>
+
+<nav class="nav">
+  <button onclick="goTo('mindmap')">Mind map</button>
+  <button onclick="goTo('debate')">The debate</button>
+  <button onclick="goTo('flow')">Conversation flow</button>
+  <button onclick="goTo('vocab')">Key vocabulary</button>
+  <button onclick="goTo('quiz')">Test yourself</button>
+</nav>
+
+<div class="wrap">
+
+  <!-- ================= MIND MAP ================= -->
+  <section id="mindmap" class="reveal">
+    <h2><span class="dot" style="background:var(--purple)"></span>The whole picture</h2>
+    <p class="section-note">Three topics, two opposing voices. Barbara defends <i>where</i> you study; Sven defends <i>what</i> you study.</p>
+    <div class="mindmap">
+      <svg width="1000" height="300" viewBox="0 0 1000 300" role="img" aria-label="Mind map: choosing a university">
+        <defs>
+          <marker id="arr" markerWidth="8" markerHeight="8" refX="6" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#c3c9d8"/>
+          </marker>
+        </defs>
+        <!-- center -->
+        <circle cx="500" cy="150" r="52" fill="#262c46"/>
+        <text x="500" y="145" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">Choosing a</text>
+        <text x="500" y="163" text-anchor="middle" fill="#fff" font-size="13" font-weight="700">University</text>
+        <!-- branches -->
+        <path d="M448,130 C370,90 290,70 210,80" fill="none" stroke="#c3c9d8" stroke-width="2" marker-end="url(#arr)"/>
+        <path d="M448,170 C370,210 290,230 210,220" fill="none" stroke="#c3c9d8" stroke-width="2" marker-end="url(#arr)"/>
+        <path d="M552,130 C630,90 710,70 790,80" fill="none" stroke="#c3c9d8" stroke-width="2" marker-end="url(#arr)"/>
+        <path d="M552,170 C630,210 710,230 790,220" fill="none" stroke="#c3c9d8" stroke-width="2" marker-end="url(#arr)"/>
+
+        <!-- location node -->
+        <circle cx="210" cy="80" r="30" fill="#fdf3e0" stroke="#d99a2b" stroke-width="3"/>
+        <text x="210" y="85" text-anchor="middle" fill="#9a6b14" font-size="12" font-weight="700">📍 Location</text>
+        <g font-size="11" fill="#5b6072">
+          <text x="118" y="30">+ near home</text>
+          <text x="118" y="46">+ big city: shops,</text>
+          <text x="118" y="62">nightlife, restaurants</text>
+          <text x="300" y="26">− campus outside</text>
+          <text x="300" y="42">− convenient (5 min)</text>
+          <text x="300" y="58">− can feel</text>
+          <text x="300" y="74">claustrophobic</text>
+        </g>
+
+        <!-- social life node -->
+        <circle cx="210" cy="220" r="30" fill="#e3f5f1" stroke="#1f9e8e" stroke-width="3"/>
+        <text x="210" y="225" text-anchor="middle" fill="#11706a" font-size="12" font-weight="700">🎉 Social life</text>
+        <g font-size="11" fill="#5b6072">
+          <text x="118" y="176">+ free time after</text>
+          <text x="118" y="192">lectures → friends</text>
+          <text x="118" y="208">+ dancing, bars, cinema</text>
+          <text x="300" y="172">− a by-product,</text>
+          <text x="300" y="188">− meet people</text>
+          <text x="300" y="204">wherever you go</text>
+        </g>
+
+        <!-- course node -->
+        <circle cx="790" cy="80" r="30" fill="#f1ebfd" stroke="#8a5cf6" stroke-width="3"/>
+        <text x="790" y="85" text-anchor="middle" fill="#6440c0" font-size="12" font-weight="700">📚 Course content</text>
+        <g font-size="11" fill="#5b6072">
+          <text x="685" y="30">− Barbara was about</text>
+          <text x="685" y="46">to discuss it…</text>
+          <text x="880" y="26">+ course is of</text>
+          <text x="880" y="42">paramount importance</text>
+          <text x="880" y="58">+ broaden knowledge</text>
+          <text x="880" y="74">of a subject</text>
+        </g>
+      </svg>
+    </div>
+  </section>
+
+  <!-- ================= DEBATE ================= -->
+  <section id="debate" class="reveal">
+    <h2><span class="dot" style="background:var(--amber)"></span>The debate, topic by topic</h2>
+    <p class="section-note">Click through each topic to see both arguments side by side.</p>
+
+    <!-- TOPIC 1: LOCATION -->
+    <div class="topic-block">
+      <span class="topic-head loc">📍 Topic 1 · Location</span>
+      <div class="grid">
+        <div class="card b">
+          <div class="who"><div class="avatar">B</div><b>Barbara</b> <small>— location is the most important thing</small></div>
+          <ul class="pts">
+            <li>Somewhere fairly <b>near home</b> so you can go home when you want to</li>
+            <li>A fairly <b>big city</b> — nice shops and exciting nightlife</li>
+            <li>Good restaurants, since it's probably your <b>first time living away from home</b></li>
+          </ul>
+          <div class="quote">"You want somewhere fairly near home so that you can go home when you want to…"</div>
+        </div>
+        <div class="card s">
+          <div class="who"><div class="avatar">S</div><b>Sven</b> <small>— think about campus location</small></div>
+          <ul class="pts">
+            <li>Some universities are on a <b>campus outside a city</b></li>
+            <li>Accommodation <b>5 minutes from lectures</b> — very convenient</li>
+            <li>But some people might find living there <b>claustrophobic</b></li>
+          </ul>
+          <div class="quote">"It's obviously very convenient to have your accommodation five minutes away from your lectures…"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOPIC 2: SOCIAL LIFE -->
+    <div class="topic-block">
+      <span class="topic-head soc">🎉 Topic 2 · Social life</span>
+      <div class="grid">
+        <div class="card b">
+          <div class="who"><div class="avatar">B</div><b>Barbara</b> <small>— social life is another key consideration</small></div>
+          <ul class="pts">
+            <li>Lectures and coursework matter — but you'll have <b>a lot of free time</b></li>
+            <li>You'll want <b>someone to spend that free time with</b></li>
+            <li>Loads to do: <b>dancing, bars, cinema</b> — which is why you need a big city</li>
+          </ul>
+          <div class="quote">"You'll have a lot of free time as well, and you'll want someone to spend that free time with."</div>
+        </div>
+        <div class="card s">
+          <div class="who"><div class="avatar">S</div><b>Sven</b> <small>— social life is only a by-product</small></div>
+          <ul class="pts">
+            <li>Social life is <b>a by-product of the whole university experience</b></li>
+            <li>The real reason to go is to <b>broaden your knowledge</b> of a subject that interests you</li>
+            <li>You're <b>bound to meet people</b> wherever you go — so don't base your choice on social life</li>
+          </ul>
+          <div class="quote">"The reason you're going to university is to broaden your knowledge of a subject that interests you…"</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TOPIC 3: COURSE CONTENT -->
+    <div class="topic-block">
+      <span class="topic-head crs">📚 Topic 3 · Course content</span>
+      <div class="grid">
+        <div class="card b">
+          <div class="who"><div class="avatar">B</div><b>Barbara</b> <small>— was about to discuss course content</small></div>
+          <ul class="pts">
+            <li>Starts "As for course content…" but is <b>interrupted</b> before she can finish</li>
+            <li>Her argument structure so far: <b>location → social life → course</b></li>
+            <li>Her priorities are all about <b>lifestyle and environment</b></li>
+          </ul>
+          <div class="quote">"As for course content…" <i>(interrupted by Sven)</i></div>
+        </div>
+        <div class="card s">
+          <div class="who"><div class="avatar">S</div><b>Sven</b> <small>— the course is of paramount importance</small></div>
+          <ul class="pts">
+            <li>The <b>course</b> is of paramount importance</li>
+            <li>Going to university is about <b>broadening your knowledge</b> of a subject you enjoy</li>
+            <li>Academic focus first — social life comes <b>second to the subject</b></li>
+          </ul>
+          <div class="quote">"It's the course that's of paramount importance here."</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CONVERSATION FLOW ================= -->
+  <section id="flow" class="reveal">
+    <h2><span class="dot" style="background:var(--teal)"></span>Conversation flow</h2>
+    <p class="section-note">Who says what — and where the interruptions happen. Sven cuts Barbara off twice; Barbara pushes back once.</p>
+    <div class="flow">
+      <div class="step b">
+        <div class="bubble"><span class="speaker">Barbara</span> opens with location: near home, big city, shops, nightlife, good restaurants.<small>📍 Topic introduced</small></div>
+      </div>
+      <div class="step s">
+        <div class="bubble"><span class="speaker">Sven</span> <span class="interrupt s-int">✋ interrupts</span><br>"Can I just stop you there for a moment?" — wants to give his views on location.<small>📍 First interruption</small></div>
+      </div>
+      <div class="step s">
+        <div class="bubble"><span class="speaker">Sven</span> campus outside a city: accommodation 5 minutes from lectures — convenient, but can feel claustrophobic.<small>📍 Topic 1 · his counterpoint</small></div>
+      </div>
+      <div class="step b">
+        <div class="bubble"><span class="speaker">Barbara</span> continues where she left off: social life — free time, friends, dancing, bars, cinema, so you need a big city.<small>🎉 Topic 2 · her case</small></div>
+      </div>
+      <div class="step s">
+        <div class="bubble"><span class="speaker">Sven</span> <span class="interrupt s-int">✋ interrupts</span><br>"If I could just come in here…" — social life is a by-product; the course matters most.<small>🎉 Second interruption</small></div>
+      </div>
+      <div class="step b">
+        <div class="bubble"><span class="speaker">Barbara</span> resists: "Do you mind if I finish?" — asserts her right to finish her point.<small>⚔️ Disagreement moment</small></div>
+      </div>
+      <div class="step s">
+        <div class="bubble"><span class="speaker">Sven</span> states his thesis: the real reason for university is to broaden knowledge of a subject that interests you — you'll meet people anywhere, so don't base your choice on social life.<small>📚 Topic 3 · his conclusion</small></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= VOCABULARY ================= -->
+  <section id="vocab" class="reveal">
+    <h2><span class="dot" style="background:var(--purple)"></span>Key vocabulary from the transcript</h2>
+    <p class="section-note">Click a card to reveal the meaning and an example from the text.</p>
+    <div class="vocab" id="vocabList"></div>
+  </section>
+
+  <!-- ================= QUIZ ================= -->
+  <section id="quiz" class="reveal">
+    <h2><span class="dot" style="background:var(--barbara)"></span>Test yourself</h2>
+    <p class="section-note">Choose an answer in each question — feedback appears immediately.</p>
+    <div id="quizList"></div>
+    <div class="score" id="scoreBox"></div>
+  </section>
+
+  <footer>Built from the "Choosing a University" transcript · Learning visualization</footer>
+</div>
+
+<script>
+  /* ---------- navigation ---------- */
+  function goTo(id){ document.getElementById(id).scrollIntoView({behavior:'smooth'}); }
+
+  /* ---------- reveal on scroll ---------- */
+  const io = new IntersectionObserver(es => es.forEach(e => e.isIntersecting && e.target.classList.add('in')), {threshold: .12});
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  /* ---------- vocabulary ---------- */
+  const vocab = [
+    ["claustrophobic", "Feeling uneasy or afraid in small, enclosed spaces.", "\"Some people might find that a bit claustrophobic.\""],
+    ["paramount importance", "Of the greatest possible importance; the top priority.", "\"It's the course that's of paramount importance here.\""],
+    ["by-product", "A secondary result that comes along with something else.", "\"Social life is a by-product of the whole university experience.\""],
+    ["broaden your knowledge", "To increase the range and depth of what you know.", "\"To broaden your knowledge of a subject that interests you.\""],
+    ["advisable", "Sensible and recommended.", "\"I don't think it's advisable to base your choice on social life.\""],
+    ["campus", "The grounds and buildings of a university.", "\"Some universities are located on a campus outside a city.\""],
+    ["nightlife", "Entertainment and social activity available in the evening.", "\"You want to be in a fairly big city with… an exciting nightlife.\""],
+    ["coursework", "The regular assignments and work required for a course.", "\"It's important to go to your lectures and do the coursework.\""],
+    ["lectures", "Formal teaching sessions given to students.", "\"Accommodation five minutes away from your lectures.\""],
+    ["base your choice on", "To make your decision according to a particular reason.", "\"I don't think it's advisable to base your choice on social life.\""],
+  ];
+  const vList = document.getElementById('vocabList');
+  vocab.forEach(v => {
+    const d = document.createElement('div');
+    d.className = 'vcard';
+    d.innerHTML = `<div class="word">${v[0]} <span class="hint">click to reveal</span></div>
+                   <div class="meaning">${v[1]}</div>
+                   <div class="example">${v[2]}</div>`;
+    d.onclick = () => d.classList.toggle('open');
+    vList.appendChild(d);
+  });
+
+  /* ---------- quiz ---------- */
+  const quiz = [
+    {
+      q: "According to Barbara, where does a student want to be?",
+      opts: ["A small campus outside the city", "A fairly big city", "Right next to home, wherever that is", "Any city with a good university"],
+      answer: 1,
+      why: "Barbara says you want a fairly big city with shops, nightlife and good restaurants."
+    },
+    {
+      q: "What does Sven say about campus accommodation near lectures?",
+      opts: ["It is always the best option", "It is convenient but can feel claustrophobic", "It is too expensive", "It is far from social life"],
+      answer: 1,
+      why: "Sven admits it's 'obviously very convenient' but says some find it claustrophobic."
+    },
+    {
+      q: "Why does Barbara think a big city matters for social life?",
+      opts: ["Lectures are better there", "There are loads of things to do: dancing, bars, cinema", "Professors are more famous", "It is closer to home"],
+      answer: 1,
+      why: "She lists dancing, bars and the cinema as reasons a big city is needed."
+    },
+    {
+      q: "According to Sven, what is the real reason for going to university?",
+      opts: ["To have an exciting nightlife", "To meet as many people as possible", "To broaden your knowledge of a subject that interests you", "To live near home"],
+      answer: 2,
+      why: "Sven: 'The reason you're going to university is to broaden your knowledge of a subject that interests you.'"
+    },
+    {
+      q: "Who interrupts whom — and how often?",
+      opts: ["Barbara interrupts Sven twice", "Sven interrupts Barbara twice", "Nobody interrupts anyone", "Sven interrupts Barbara three times"],
+      answer: 1,
+      why: "Sven cuts Barbara off twice — once about location and once about social life. Barbara then asks, 'Do you mind if I finish?'"
+    }
+  ];
+  const qList = document.getElementById('quizList');
+  const scoreBox = document.getElementById('scoreBox');
+  quiz.forEach((item, qi) => {
+    const d = document.createElement('div');
+    d.className = 'quiz-q';
+    let opts = '';
+    item.opts.forEach((o, oi) => {
+      opts += `<label><input type="radio" name="q${qi}" value="${oi}"> ${o}</label>`;
+    });
+    d.innerHTML = `<div class="q">${qi+1}. ${item.q}</div><div class="opts">${opts}</div>
+                   <div class="feedback"></div>`;
+    d.querySelectorAll('input').forEach(inp => inp.onchange = () => {
+      d.classList.add('done');
+      const picked = +inp.value;
+      const ok = picked === item.answer;
+      const fb = d.querySelector('.feedback');
+      fb.className = 'feedback ' + (ok ? 'ok' : 'bad');
+      fb.innerHTML = ok ? '✅ Correct! ' : '❌ Not quite. ';
+      fb.innerHTML += item.why;
+      d.querySelectorAll('label').forEach((lb, li) => {
+        if (li === item.answer) lb.classList.add('correct');
+        if (li === picked && !ok) lb.classList.add('wrong');
+      });
+      const total = document.querySelectorAll('.quiz-q.done').length;
+      if (total === quiz.length) {
+        const right = [...document.querySelectorAll('.quiz-q.done .feedback.ok')].length;
+        scoreBox.className = 'score show';
+        scoreBox.textContent = `🎉 You answered ${right} of ${quiz.length} correctly! Scroll up to review the debate cards.`;
+      }
+    });
+    qList.appendChild(d);
+  });
+</script>
+</body>
+</html>
